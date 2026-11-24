@@ -58,10 +58,11 @@ def clean(raw, category_ids: list[str]) -> dict:
 
 def system_prompt(industry: dict) -> str:
     cats = "\n".join(f"- {c['id']}: {c['label']}" for c in industry["categories"])
+    example = industry["categories"][min(3, len(industry["categories"]) - 1)]["id"]
     return f"""You run the customer pre-consultation for a {industry['label']} marketplace.
 Return only JSON: {{"needs": {{category_id: 0-10}}, "budget": number or null, "summary": string, "follow_up": string or null}}
 
-Categories:
+Keys in "needs" must be these exact ids, e.g. {{"{example}": 8}}:
 {cats}
 
 Rules:
@@ -79,7 +80,7 @@ def call_ai(system: str, messages: list[dict]) -> str:
         raise RuntimeError("NEBIUS_API_KEY is not set")
     ai = OpenAI(base_url=BASE_URL, api_key=key, timeout=8, max_retries=0)
     res = ai.chat.completions.create(
-        model=MODEL, max_tokens=1500, response_format={"type": "json_object"},
+        model=MODEL, max_tokens=1500, extra_body={"reasoning_effort": "none"}, response_format={"type": "json_object"},
         messages=[{"role": "system", "content": system}, *messages])
     return res.choices[0].message.content
 

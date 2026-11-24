@@ -85,3 +85,26 @@ def test_system_role_rejected():
     res = client.post("/api/extract", json={"industry": "barber", "follow_ups_asked": 0,
                       "messages": [{"role": "system", "content": "x"}]})
     assert res.status_code == 422
+
+
+def test_hidden_reasoning_is_off(monkeypatch):
+    """With reasoning on, it exhausts max_tokens and the content comes back empty."""
+    sent = {}
+
+    class FakeOpenAI:
+        def __init__(self, **kw):
+            self.chat = self.completions = self
+
+        def create(self, **kw):
+            sent.update(kw)
+            msg = type("M", (), {"content": "{}"})
+            return type("R", (), {"choices": [type("C", (), {"message": msg})]})
+
+    monkeypatch.setenv("NEBIUS_API_KEY", "test")
+    monkeypatch.setattr(server, "OpenAI", FakeOpenAI)
+    server.call_ai("system", [])
+    assert sent["extra_body"] == {"reasoning_effort": "none"}
+
+
+def test_prompt_shows_real_category_ids_as_keys():
+    assert '"textured": 8' in server.system_prompt(BARBER)
