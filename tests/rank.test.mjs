@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { rank, conventional, normalise, fit } from '../static/rank.js';
+import { rank, conventional, normalise, fit, clampPoints } from '../static/rank.js';
 
 const load = (n) => JSON.parse(readFileSync(new URL(`../data/${n}.json`, import.meta.url)));
 const barber = load('barber');
@@ -49,3 +49,24 @@ test('fit matches the documented formula', () => {
 test('normalise makes weights sum to 1 and drops zeros', () => {
   assert.deepEqual(normalise({ a: 3, b: 1, c: 0 }), { a: 0.75, b: 0.25 });
 });
+test('clampPoints caps a slider at the points left in the 10-point budget', () => {
+  assert.deepEqual(clampPoints({ a: 5, b: 3 }, 'b', 9), { a: 5, b: 5 });
+  assert.deepEqual(clampPoints({ a: 5, b: 3 }, 'b', 0), { a: 5 });
+});
+test('recurring leak customer gets plumber C first', () => {
+  const p = load('plumbing');
+  const l = Object.fromEntries(p.categories.map((c) => [c.id, c.label]));
+  assert.equal(rank(p.providers, { complex_faults: 0.6, diagnostic: 0.4 }, 120, l)[0].provider.id, 'C');
+});
+for (const name of ['barber', 'plumbing']) {
+  test(`${name}: points total 10 or 0, and every id exists`, () => {
+    const d = load(name);
+    const ids = d.categories.map((c) => c.id);
+    for (const p of d.providers) {
+      const total = Object.values(p.points).reduce((a, b) => a + b, 0);
+      assert.equal(total, p.disclosed ? 10 : 0);
+      assert.ok(Object.keys(p.points).every((k) => ids.includes(k)));
+    }
+    for (const s of d.samples) assert.ok(Object.keys(s.result.needs).every((k) => ids.includes(k)));
+  });
+}

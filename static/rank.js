@@ -55,3 +55,12 @@ export function rank(providers, needs, budget = null, labels = {}) {
     return { provider, base: b, bonus, score: b + bonus, mutual: f.mutual, ...explain(provider, n, overBudget, budget, labels, f) };
   }).sort((x, y) => y.score - x.score);
 }
+
+export const POINT_BUDGET = 10;
+
+export function clampPoints(points, id, value) {
+  const others = Object.entries(points).reduce((s, [k, v]) => (k === id ? s : s + v), 0);
+  const next = { ...points, [id]: Math.max(0, Math.min(value, POINT_BUDGET - others)) };
+  if (next[id] === 0) delete next[id];
+  return next;
+}
