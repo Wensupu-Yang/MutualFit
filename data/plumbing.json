@@ -6,7 +6,7 @@
   {"id":"complex_faults","label":"Complex faults"},{"id":"urgent","label":"Urgent call-outs"},
   {"id":"fixed_price","label":"Fixed-price work"},{"id":"diagnostic","label":"Diagnostic investigation"}],
  "providers":[
-  {"id":"A","name":"Quickfix Plumbing","bio":"Small repairs and routine maintenance","rating":4.9,"reviews":640,"price":70,"disclosed":true,"points":{"small_repairs":5,"maintenance":3,"fixed_price":2}},
+  {"id":"A","name":"Quickfix Plumbing","bio":"Small repairs and routine maintenance","rating":4.9,"reviews":640,"price":70,"disclosed":true,"points":{"small_repairs":4,"maintenance":2,"fixed_price":2,"urgent":2}},
   {"id":"B","name":"Harbour Bathrooms","bio":"Renovations and larger installations","rating":4.9,"reviews":380,"price":150,"disclosed":true,"points":{"renovations":5,"installations":4,"fixed_price":1}},
   {"id":"C","name":"Deep Trace","bio":"Recurring leaks and unusual faults","rating":4.9,"reviews":88,"price":110,"disclosed":true,"points":{"complex_faults":6,"diagnostic":4}},
   {"id":"D","name":"CityWide Plumbers","bio":"All plumbing work","rating":4.9,"reviews":1105,"price":85,"disclosed":false,"points":{}}],

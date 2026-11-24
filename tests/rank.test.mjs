@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { rank, conventional, normalise, fit, clampPoints } from '../static/rank.js';
+import { rank, conventional, normalise, fit, clampPoints, toSliders } from '../static/rank.js';
 
 const load = (n) => JSON.parse(readFileSync(new URL(`../data/${n}.json`, import.meta.url)));
 const barber = load('barber');
@@ -19,7 +19,7 @@ test('curly customer gets C first', () => {
 test('undisclosed provider gets no bonus and says fit is unknown', () => {
   const d = get(run(), 'D');
   assert.equal(d.bonus, 0);
-  assert.ok(d.reasons.includes('Fit unknown: preferences not disclosed'));
+  assert.ok(d.notes.includes('Fit unknown: preferences not disclosed'));
 });
 test('disclosure never lowers a provider score', () => {
   for (const r of run()) assert.ok(r.score >= r.base);
@@ -70,3 +70,22 @@ for (const name of ['barber', 'plumbing']) {
     for (const s of d.samples) assert.ok(Object.keys(s.result.needs).every((k) => ids.includes(k)));
   });
 }
+
+test('zero provider-side points is a trade-off, not a reason', () => {
+  const b = get(run(), 'B');
+  assert.deepEqual(b.reasons, []);
+  assert.ok(b.tradeoffs.some((t) => t.startsWith("Provider's side: 0 of")));
+});
+test('over-budget trade-off says the bonus is halved', () => {
+  assert.ok(get(run(CURLY, 30), 'C').tradeoffs.some((t) => t.includes('fit bonus halved')));
+});
+for (const name of ['barber', 'plumbing']) {
+  test(`${name}: some provider covers every category`, () => {
+    const d = load(name);
+    for (const c of d.categories) assert.ok(d.providers.some((p) => p.points[c.id] > 0), c.id);
+  });
+}
+test('toSliders scales AI needs to 10 and keeps the customer edits', () => {
+  assert.deepEqual(toSliders({ a: 0.5, b: 0.25, c: 0.01 }, { b: 9, d: 0 }), { a: 10, b: 9, c: 1, d: 0 });
+  assert.deepEqual(toSliders({}, {}), {});
+});

@@ -25,9 +25,10 @@ export function fit(provider, needs) {
 
 function explain(provider, needs, overBudget, budget, labels, f) {
   const reasons = [];
+  const notes = [];
   const tradeoffs = [];
   if (!provider.disclosed) {
-    reasons.push('Fit unknown: preferences not disclosed');
+    notes.push('Fit unknown: preferences not disclosed');
   } else {
     const ordered = Object.entries(needs).sort((a, b) => b[1] - a[1]);
     for (const [id, weight] of ordered) {
@@ -38,11 +39,11 @@ function explain(provider, needs, overBudget, budget, labels, f) {
     }
     if (ordered.length) {
       const share = Math.round(f.providerFit * 10);
-      reasons.push(`Provider's side: ${share} of their 10 points are on what you need`);
+      (share > 0 ? reasons : tradeoffs).push(`Provider's side: ${share} of their 10 points are on what you need`);
     }
   }
-  if (overBudget) tradeoffs.push(`£${provider.price} is over your £${budget} budget`);
-  return { reasons, tradeoffs };
+  if (overBudget) tradeoffs.push(`£${provider.price} is over your £${budget} budget: fit bonus halved`);
+  return { reasons, tradeoffs, notes };
 }
 
 export function rank(providers, needs, budget = null, labels = {}) {
@@ -63,4 +64,11 @@ export function clampPoints(points, id, value) {
   const next = { ...points, [id]: Math.max(0, Math.min(value, POINT_BUDGET - others)) };
   if (next[id] === 0) delete next[id];
   return next;
+}
+
+// AI weights become 0-10 sliders; anything the customer set by hand wins.
+export function toSliders(needs, edits) {
+  const top = Math.max(0, ...Object.values(needs));
+  const scaled = Object.entries(needs).map(([k, v]) => [k, Math.max(1, Math.round((v / top) * 10))]);
+  return { ...Object.fromEntries(scaled), ...edits };
 }
