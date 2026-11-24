@@ -1,17 +1,124 @@
 {
- "id":"plumbing","label":"Plumbing",
- "categories":[
-  {"id":"small_repairs","label":"Small repairs"},{"id":"maintenance","label":"Routine maintenance"},
-  {"id":"installations","label":"Installations"},{"id":"renovations","label":"Bathroom renovations"},
-  {"id":"complex_faults","label":"Complex faults"},{"id":"urgent","label":"Urgent call-outs"},
-  {"id":"fixed_price","label":"Fixed-price work"},{"id":"diagnostic","label":"Diagnostic investigation"}],
- "providers":[
-  {"id":"A","name":"Quickfix Plumbing","bio":"Small repairs and routine maintenance","rating":4.9,"reviews":640,"price":70,"disclosed":true,"points":{"small_repairs":4,"maintenance":2,"fixed_price":2,"urgent":2}},
-  {"id":"B","name":"Harbour Bathrooms","bio":"Renovations and larger installations","rating":4.9,"reviews":380,"price":150,"disclosed":true,"points":{"renovations":5,"installations":4,"fixed_price":1}},
-  {"id":"C","name":"Deep Trace","bio":"Recurring leaks and unusual faults","rating":4.9,"reviews":88,"price":110,"disclosed":true,"points":{"complex_faults":6,"diagnostic":4}},
-  {"id":"D","name":"CityWide Plumbers","bio":"All plumbing work","rating":4.9,"reviews":1105,"price":85,"disclosed":false,"points":{}}],
- "samples":[
-  {"label":"Leak nobody can fix","text":"There's a damp patch that keeps coming back. Two plumbers have patched it and it still leaks. I want the actual cause found. Up to £120 for the visit.","result":{"needs":{"complex_faults":0.6,"diagnostic":0.4},"budget":120,"summary":"A recurring leak two plumbers failed to fix; wants the cause found.","follow_up":null}},
-  {"label":"New bathroom","text":"I'm ripping out my whole bathroom and need a new shower and toilet installed, with one fixed price. About £160 a visit.","result":{"needs":{"renovations":0.5,"installations":0.3,"fixed_price":0.2},"budget":160,"summary":"Full bathroom refit with new fixtures at a fixed price.","follow_up":null}},
-  {"label":"Dripping tap","text":"My kitchen tap drips. Simple job, I want to know the price up front. Around £75.","result":{"needs":{"small_repairs":0.65,"fixed_price":0.35},"budget":75,"summary":"A simple tap repair with the price agreed up front.","follow_up":null}}]
+ "id": "plumbing",
+ "label": "Plumbing",
+ "categories": [
+  {
+   "id": "small_repairs",
+   "label": "Small repairs & maintenance"
+  },
+  {
+   "id": "installations",
+   "label": "Installations"
+  },
+  {
+   "id": "renovations",
+   "label": "Bathroom renovations"
+  },
+  {
+   "id": "complex_faults",
+   "label": "Complex faults & diagnosis"
+  },
+  {
+   "id": "urgent",
+   "label": "Urgent call-outs"
+  },
+  {
+   "id": "fixed_price",
+   "label": "Fixed-price work"
+  }
+ ],
+ "providers": [
+  {
+   "id": "A",
+   "name": "Quickfix Plumbing",
+   "bio": "Small repairs and routine maintenance",
+   "rating": 4.9,
+   "reviews": 640,
+   "price": 70,
+   "disclosed": true,
+   "points": {
+    "small_repairs": 5,
+    "urgent": 3,
+    "fixed_price": 2
+   }
+  },
+  {
+   "id": "B",
+   "name": "Harbour Bathrooms",
+   "bio": "Renovations and larger installations",
+   "rating": 4.9,
+   "reviews": 380,
+   "price": 150,
+   "disclosed": true,
+   "points": {
+    "renovations": 5,
+    "installations": 4,
+    "fixed_price": 1
+   }
+  },
+  {
+   "id": "C",
+   "name": "Deep Trace",
+   "bio": "Recurring leaks and unusual faults",
+   "rating": 4.8,
+   "reviews": 88,
+   "price": 110,
+   "disclosed": true,
+   "points": {
+    "complex_faults": 8,
+    "urgent": 2
+   }
+  },
+  {
+   "id": "D",
+   "name": "CityWide Plumbers",
+   "bio": "All plumbing work",
+   "rating": 5.0,
+   "reviews": 1105,
+   "price": 85,
+   "disclosed": false,
+   "points": {}
+  }
+ ],
+ "samples": [
+  {
+   "label": "Leak nobody can fix",
+   "text": "There's a damp patch that keeps coming back. Two plumbers have patched it and it still leaks. I want the actual cause found. Up to £120 for the visit.",
+   "result": {
+    "needs": {
+     "complex_faults": 1
+    },
+    "budget": 120,
+    "summary": "You have a recurring leak two plumbers failed to fix and want the cause found.",
+    "follow_up": null
+   }
+  },
+  {
+   "label": "New bathroom",
+   "text": "I'm ripping out my whole bathroom and need a new shower and toilet installed, with one fixed price. About £160 a visit.",
+   "result": {
+    "needs": {
+     "renovations": 0.5,
+     "installations": 0.3,
+     "fixed_price": 0.2
+    },
+    "budget": 160,
+    "summary": "You want a full bathroom refit with new fixtures at a fixed price.",
+    "follow_up": null
+   }
+  },
+  {
+   "label": "Dripping tap",
+   "text": "My kitchen tap drips. Simple job, I want to know the price up front. Around £75.",
+   "result": {
+    "needs": {
+     "small_repairs": 0.65,
+     "fixed_price": 0.35
+    },
+    "budget": 75,
+    "summary": "You want a simple tap repair with the price agreed up front.",
+    "follow_up": null
+   }
+  }
+ ]
 }

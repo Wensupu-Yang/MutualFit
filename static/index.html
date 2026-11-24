@@ -2,27 +2,33 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MutualFit</title><link rel="stylesheet" href="/static/style.css"></head>
 <body>
-<header><h1>MutualFit</h1><p>The best provider doesn't exist in the abstract. The best match does.</p><nav id="tabs"></nav></header>
-<main>
- <section class="customer">
+<header><div><h1>MutualFit</h1><p>The best provider doesn't exist in the abstract. The best match does.</p></div><nav id="tabs" aria-label="Industry"></nav></header>
+<nav id="views"><button id="showClient" class="on">Client view</button><button id="showProvider">Provider view</button></nav>
+<main id="client">
+ <section class="panel">
   <h2>What do you need?</h2>
   <div id="samples"></div>
-  <form id="ask"><textarea id="text" rows="5" maxlength="2000" aria-label="What you need" placeholder="In your own words: what you want, what went wrong before, your budget…"></textarea><button class="primary">Find my match</button></form>
+  <form id="ask"><textarea id="text" rows="4" maxlength="2000" aria-label="What you need" placeholder="In your own words: what you want, what went wrong before, your budget…"></textarea><button class="primary">Find my match</button></form>
   <p id="status" role="status"></p>
   <div id="understood" hidden><h3>What we understood <span id="source"></span></h3><p id="summary"></p></div>
   <form id="follow" hidden><label id="question" for="reply"></label><input id="reply" maxlength="2000"><div class="row"><button class="primary">Answer</button><button type="button" id="skip">Skip</button></div></form>
-  <h3>Your needs <small>adjust anything</small></h3>
-  <div id="needs"></div>
-  <label class="budget">Budget £ <input id="budget" type="number" min="0" placeholder="none"></label>
+  <details id="adjust"><summary>Adjust your needs</summary><div id="needs"></div>
+  <label class="budget">Budget £ <input id="budget" type="number" min="0" placeholder="none"></label></details>
  </section>
  <section class="results">
-  <div><h2>By rating &amp; reviews</h2><ol id="byRating"></ol></div>
-  <div><h2>By mutual fit</h2><ol id="byFit"></ol></div>
+  <div class="compare"><h2>By rating &amp; reviews</h2><span></span><h2>By mutual fit</h2>
+   <ol id="byRating"></ol><svg id="lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg><ol id="byFit"></ol></div>
+  <div id="why"></div>
  </section>
- <section class="provider">
-  <h2>Provider view</h2><p>Each provider has 10 points. Prioritising one kind of work means giving up another. Sharing is optional.</p>
-  <div id="picker"></div><div id="points"></div>
+</main>
+<main id="provider" hidden>
+ <section class="panel">
+  <h2>What work do you want more of?</h2>
+  <p class="meta">Spend 10 points. More on one kind of work means less on another. Sharing is optional.</p>
+  <label class="pick">Provider <select id="picker"></select></label>
+  <div id="points"></div>
  </section>
+ <section class="panel"><h2>Your rank for the current customer</h2><div id="impact"></div></section>
 </main>
 <footer>Synthetic data. Whether the points budget encourages truthful disclosure is untested.</footer>
 <script type="module" src="/static/app.js"></script>

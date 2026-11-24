@@ -69,3 +69,11 @@ Optional: provider description to suggested points.
 
 **Tests:** ranking only: expected winner in both brief scenarios, undisclosed bonus
 is 0, disclosure never lowers own score, over-budget halves bonus.
+
+## Revision 1 (user, after first demo)
+- Ratings vary from 4.8 to 5.0 instead of a flat 4.9 (supersedes "all 4.9 stars").
+- Six point categories per industry (asked for 5-7); budget stays 10 points.
+- Client and provider views are separate tabs; provider view is simple steppers.
+- Client view compares the two rankings side by side with movement lines.
+- Builder's call: provider view shows "rank for the current customer, sharing vs
+  not sharing", because the rankings are no longer visible on that tab.

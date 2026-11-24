@@ -1,12 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { rank, conventional, normalise, fit, clampPoints, toSliders } from '../static/rank.js';
+import { rank, conventional, normalise, fit, clampPoints, toSliders, impact } from '../static/rank.js';
 
 const load = (n) => JSON.parse(readFileSync(new URL(`../data/${n}.json`, import.meta.url)));
 const barber = load('barber');
 const labels = Object.fromEntries(barber.categories.map((c) => [c.id, c.label]));
-const CURLY = { textured: 0.5, follows_brief: 0.2, unhurried: 0.3 };
+const CURLY = { textured: 0.6, listens: 0.4 };
 const run = (needs = CURLY, budget = 45, providers = barber.providers) => rank(providers, needs, budget, labels);
 const get = (rows, id) => rows.find((r) => r.provider.id === id);
 
@@ -30,9 +30,22 @@ test('over budget halves the bonus and is explained', () => {
   assert.ok(over.tradeoffs.some((t) => t.includes('£40')));
 });
 test('spreading points evenly scores below specialising', () => {
-  const points = Object.fromEntries(barber.categories.map((c, i) => [c.id, i ? 1 : 2]));
+  const points = Object.fromEntries(barber.categories.map((c, i) => [c.id, i < 4 ? 2 : 1]));
   const spread = barber.providers.map((p) => (p.id === 'C' ? { ...p, points } : p));
   assert.ok(get(run(CURLY, 45, spread), 'C').score < get(run(), 'C').score);
+});
+for (const name of ['barber', 'plumbing']) {
+  test(`${name}: 5 to 7 categories, ratings vary between 4.8 and 5`, () => {
+    const d = load(name);
+    assert.ok(d.categories.length >= 5 && d.categories.length <= 7);
+    const ratings = d.providers.map((p) => p.rating);
+    assert.ok(ratings.every((x) => x >= 4.8 && x <= 5));
+    assert.ok(new Set(ratings).size >= 3);
+  });
+}
+test('impact gives rank as set, and rank if the provider did not share', () => {
+  assert.deepEqual(impact(barber.providers, 'C', CURLY, 45), { now: 1, hidden: 4 });
+  assert.equal(impact(barber.providers, 'C', {}, null), null);
 });
 test('empty needs give no bonus and no NaN', () => {
   for (const r of run({})) { assert.equal(r.bonus, 0); assert.ok(Number.isFinite(r.score)); }
@@ -42,9 +55,9 @@ test('provider side is explained when it put 0 points on the top need', () => {
 });
 test('fit matches the documented formula', () => {
   const f = fit(barber.providers.find((p) => p.id === 'C'), CURLY);
-  assert.ok(Math.abs(f.customerFit - 0.7) < 1e-9);
+  assert.ok(Math.abs(f.customerFit - 0.8) < 1e-9);
   assert.ok(Math.abs(f.providerFit - 0.8) < 1e-9);
-  assert.ok(Math.abs(f.mutual - Math.sqrt(0.56)) < 1e-9);
+  assert.ok(Math.abs(f.mutual - 0.8) < 1e-9);
 });
 test('normalise makes weights sum to 1 and drops zeros', () => {
   assert.deepEqual(normalise({ a: 3, b: 1, c: 0 }), { a: 0.75, b: 0.25 });
@@ -56,7 +69,7 @@ test('clampPoints caps a slider at the points left in the 10-point budget', () =
 test('recurring leak customer gets plumber C first', () => {
   const p = load('plumbing');
   const l = Object.fromEntries(p.categories.map((c) => [c.id, c.label]));
-  assert.equal(rank(p.providers, { complex_faults: 0.6, diagnostic: 0.4 }, 120, l)[0].provider.id, 'C');
+  assert.equal(rank(p.providers, { complex_faults: 1 }, 120, l)[0].provider.id, 'C');
 });
 for (const name of ['barber', 'plumbing']) {
   test(`${name}: points total 10 or 0, and every id exists`, () => {

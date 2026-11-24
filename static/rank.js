@@ -72,3 +72,10 @@ export function toSliders(needs, edits) {
   const scaled = Object.entries(needs).map(([k, v]) => [k, Math.max(1, Math.round((v / top) * 10))]);
   return { ...Object.fromEntries(scaled), ...edits };
 }
+
+// Where a provider ranks for this customer as set, and if they did not share.
+export function impact(providers, id, needs, budget) {
+  if (!Object.keys(normalise(needs)).length) return null;
+  const place = (list) => rank(list, needs, budget).findIndex((r) => r.provider.id === id) + 1;
+  return { now: place(providers), hidden: place(providers.map((p) => (p.id === id ? { ...p, disclosed: false } : p))) };
+}
